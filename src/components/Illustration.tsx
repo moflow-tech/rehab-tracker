@@ -420,6 +420,31 @@ export const ILLUSTRATIONS: Record<string, Frames> = {
     },
   },
 
+  clamside: {
+    alt: 'Front view: lying on your side with hips and knees bent and a band above the knees. The top knee lifts up while the feet stay together, like a clamshell opening.',
+    start: {
+      label: 'Knees together',
+      svg: (
+        <>
+          <Floor y={184} />
+          <SideLying topKnee={[146, 176]} />
+          <Label x={20} y={204}>pelvis stacked</Label>
+        </>
+      ),
+    },
+    end: {
+      label: 'Lift top knee, 2 s',
+      svg: (
+        <>
+          <Floor y={184} />
+          <SideLying topKnee={[144, 124]} />
+          <Arrow p={[[168, 156], [164, 124]]} />
+          <Label x={96} y={204}>feet together</Label>
+        </>
+      ),
+    },
+  },
+
   balance: {
     alt: 'Front view next to a counter: standing on two feet, then on one leg with the other foot lifted, hips level and knee soft.',
     start: {
@@ -584,6 +609,23 @@ export const ILLUSTRATIONS: Record<string, Frames> = {
     },
   },
 };
+
+/** Side-lying, viewed from the front: head on the left, hips and knees bent toward the viewer. */
+function SideLying({ topKnee }: { topKnee: P }) {
+  const hip: P = [112, 164];
+  const feet: P = [178, 170];
+  return (
+    <g>
+      <Limb p={[[56, 166], [34, 180], [22, 166]]} ghost />
+      <Limb p={[[hip[0], 172], [146, 182], [feet[0] - 2, 176]]} ghost />
+      <Limb p={[[56, 160], hip]} />
+      <polyline points={pts([142, 180], [topKnee[0] - 4, topKnee[1] + 6])} className="band" />
+      <Limb p={[hip, topKnee, feet]} />
+      <Limb p={[[60, 158], [84, 148], [92, 180]]} ghost />
+      <circle cx={34} cy={150} r={13} className="fig-fill" />
+    </g>
+  );
+}
 
 function Front({ kneeOut }: { kneeOut: number }) {
   const kx = 122 + kneeOut * 22;

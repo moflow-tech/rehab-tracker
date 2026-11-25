@@ -131,6 +131,16 @@ export const EXERCISES: Exercise[] = [
     illustration: 'clam',
   },
 
+  {
+    id: 'clam-side', aliases: ['Side-lying clamshell', 'Side lying clam', 'Side-lying clam'], name: 'Side-lying clamshell', metric: 'reps', equipment: 'band',
+    dose: { sets: 2, reps: 15, perSide: true, note: '2 s pause at the top' },
+    howTo: 'Lie on your side with hips and knees bent, heels in line with your back, and a mini-band just above the knees if you use one. Keeping the feet together, lift the top knee as far as you can without the pelvis rolling back, pause for 2 s, then lower slowly.',
+    cues: ['Feet stay together', 'Pelvis stays stacked – don\'t roll backward', 'Move from the hip, slow on the way down'],
+    mistake: 'Rolling the top hip back to make the knee go higher.',
+    why: 'Isolates the side hip muscles your physio wants stronger, without load through the knee.',
+    illustration: 'clamside',
+  },
+
   // ---------- Evening routine ----------
   {
     id: 'bal-1', name: 'Single-leg balance – eyes open', metric: 'hold', equipment: 'bodyweight', ladder: 'balance', level: 1,
@@ -415,6 +425,7 @@ export const MORNING: Slot[] = [
   { ref: 'toe-yoga' },
   { ref: 'tibialis', ladder: true },
   { ref: 'clam' },
+  { ref: 'clam-side' },
 ];
 
 export const EVENING: Slot[] = [

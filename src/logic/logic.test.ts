@@ -286,5 +286,6 @@ describe('new ladders', () => {
     expect(LADDERS.wallsit.levels.map((id) => EX[id].ladder)).toEqual(['wallsit', 'wallsit', 'wallsit']);
     expect(LADDERS.squat.levels).toEqual(['he-squat', 'he-back-squat']);
     expect(dayPlan('2026-12-02').evening.map((s) => s.ref)).toContain('wallsit');
+    expect(dayPlan('2026-12-02').morning.map((s) => s.ref)).toEqual(['ktw', 'slant', 'shortfoot', 'toe-yoga', 'tibialis', 'clam', 'clam-side']);
   });
 });
