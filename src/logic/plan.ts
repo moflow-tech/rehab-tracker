@@ -1,13 +1,17 @@
-import { EVENING, EX, LADDERS, LEG_DAYS, MORNING, PHASE_SWITCH_DATE } from '../data/plan';
-import type { DailyLog, Dose, Exercise, LadderId, Phase, Settings, Slot } from '../types';
+import { EVENING, EX, FINISHER, LADDERS, LEG_DAYS, MORNING, PHASE_SWITCH_DATE } from '../data/plan';
+import type { DailyLog, Dose, Exercise, LadderId, Phase, RoutineId, Settings, Slot } from '../types';
 import { weekday } from './dates';
 
 export interface DayPlan {
   date: string;
   legDay: 'legA' | 'legB' | null;
   isSunday: boolean;
+  /** empty on Sundays (rest morning) */
   morning: Slot[];
+  /** every day, leg days included */
   evening: Slot[];
+  /** Tuesdays and Fridays, after the upper-body session */
+  finisher: Slot[];
   /** 1 normally; 0.5 on Sundays and while backing off */
   doseScale: number;
 }
@@ -20,8 +24,9 @@ export function dayPlan(date: string, backingOff = false): DayPlan {
     date,
     legDay,
     isSunday,
-    morning: MORNING,
-    evening: legDay ? EVENING.filter((s) => s.ref === 'balance') : EVENING,
+    morning: isSunday ? [] : MORNING,
+    evening: EVENING,
+    finisher: wd === 2 || wd === 5 ? FINISHER : [],
     doseScale: isSunday || backingOff ? 0.5 : 1,
   };
 }
@@ -54,8 +59,16 @@ export function resolveSlot(slot: Slot, settings: Settings): { exercise: Exercis
   return { exercise, dose: slot.dose ?? exercise.dose };
 }
 
+export const ROUTINE_SLOTS: Record<RoutineId, Slot[]> = { morning: MORNING, evening: EVENING, finisher: FINISHER };
+
+/** The routines due on a day, in order. */
+export function dueRoutines(plan: DayPlan): RoutineId[] {
+  return (['morning', 'evening', 'finisher'] as RoutineId[]).filter((r) => plan[r].length > 0);
+}
+
+/** Every slot is done. An empty list (nothing due) counts as done. */
 export function slotsDone(slots: Slot[], log?: DailyLog): boolean {
-  return !!log && slots.every((s) => log.items[s.ref]?.done);
+  return slots.length === 0 || (!!log && slots.every((s) => log.items[s.ref]?.done));
 }
 
 export function legDaySlots(session: 'legA' | 'legB', phase: Phase): Slot[] {

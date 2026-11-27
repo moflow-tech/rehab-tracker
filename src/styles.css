@@ -334,6 +334,7 @@ textarea { resize: vertical; }
 .toe.up { fill: var(--fig); }
 .gallery { display: grid; gap: 12px; padding: 16px; }
 .seg-row.grid2 { display: grid; grid-template-columns: 1fr 1fr; }
+.seg-row.grid2 > :last-child:nth-child(odd) { grid-column: span 2; }
 .effort { margin-top: 8px; }
 .routine-actions { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 .streak { font-weight: 700; color: var(--go); }
@@ -395,3 +396,5 @@ textarea { resize: vertical; }
 .session-pain { margin-top: 4px; }
 .history-list li .row-btn { min-height: 48px; }
 .sheet .btn.small.timer-start { margin-top: 10px; }
+
+.gate-text { padding: 10px 0; }

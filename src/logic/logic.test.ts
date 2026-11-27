@@ -3,7 +3,8 @@ import { DEFAULT_SETTINGS, EX } from '../data/plan';
 import type { DailyLog, EntryLog, Settings, Workout } from '../types';
 import { csvToWorkouts, workoutsToCSV } from './csv';
 import { backoffStatus, painZone, runFlag } from './pain';
-import { dayPlan, doseText, phasePrompt, scaleDose } from './plan';
+import { dayPlan, doseText, dueRoutines, phasePrompt, scaleDose } from './plan';
+import { cleanRun, gatePassed, longestRunCap, stageStatus } from './running';
 import { bestE1RM, cleanStreak, epley, estimateRPE, history, ladderAttempts, ladderReady, suggestLoad } from './progression';
 import { completion7, weeklySummary } from './summary';
 import { buildSteps, totalSeconds } from './timer';
@@ -173,12 +174,19 @@ describe('progression ladders', () => {
 });
 
 describe('schedule and doses', () => {
-  it('puts leg day A on Monday and B on Thursday, with only balance in the evening', () => {
+  it('puts leg day A on Monday and B on Thursday, with the full evening routine every day', () => {
     const mon = dayPlan('2026-11-30');
     expect(mon.legDay).toBe('legA');
-    expect(mon.evening.map((s) => s.ref)).toEqual(['balance']);
+    expect(mon.evening.map((s) => s.ref)).toEqual(['balance', 'hip-flexor', 'hamstring', 'ninety', 'deep-squat', 'dead-bug']);
     expect(dayPlan('2026-12-03').legDay).toBe('legB');
-    expect(dayPlan('2026-12-02').evening).toHaveLength(5);
+    expect(dayPlan('2026-12-02').evening).toHaveLength(6);
+  });
+  it('adds the finisher on Tuesday and Friday and rests on Sunday morning', () => {
+    expect(dayPlan('2026-12-01').finisher.map((s) => s.ref)).toEqual(['heel-straight', 'heel-bent', 'wallsit', 'side-plank']);
+    expect(dayPlan('2026-12-04').finisher).toHaveLength(4);
+    expect(dayPlan('2026-12-02').finisher).toHaveLength(0);
+    expect(dueRoutines(dayPlan('2026-12-06'))).toEqual(['evening']);
+    expect(dueRoutines(dayPlan('2026-12-01'))).toEqual(['morning', 'evening', 'finisher']);
   });
   it('halves doses on Sundays', () => {
     const sun = dayPlan('2026-11-29');
@@ -192,9 +200,9 @@ describe('schedule and doses', () => {
     expect(doseText({ sets: 2, reps: 10, holdS: 5, perSide: true })).toBe('2×10, 5 s hold each');
     expect(doseText({ sets: 3, carryM: 30 })).toBe('3×30 m');
   });
-  it('prompts the 45-min switch from 14 Dec unless delayed', () => {
-    expect(phasePrompt('2026-12-13', DEFAULT_SETTINGS)).toBe(false);
-    expect(phasePrompt('2026-12-14', DEFAULT_SETTINGS)).toBe(true);
+  it('prompts the 45-min switch from week 3 (9 Dec) unless delayed', () => {
+    expect(phasePrompt('2026-12-08', DEFAULT_SETTINGS)).toBe(false);
+    expect(phasePrompt('2026-12-09', DEFAULT_SETTINGS)).toBe(true);
     expect(phasePrompt('2026-12-15', { ...DEFAULT_SETTINGS, phaseDelayUntil: '2026-12-21' })).toBe(false);
     expect(phasePrompt('2026-12-15', { ...DEFAULT_SETTINGS, phase: '45' })).toBe(false);
   });
@@ -227,9 +235,10 @@ describe('summary', () => {
   it('computes 7-day completion', () => {
     const all = (date: string): DailyLog => ({
       date,
-      items: Object.fromEntries([...dayPlan(date).morning, ...dayPlan(date).evening].map((s) => [s.ref, { done: true }])),
+      items: Object.fromEntries([...dayPlan(date).morning, ...dayPlan(date).evening, ...dayPlan(date).finisher].map((s) => [s.ref, { done: true }])),
     });
-    expect(completion7('2026-12-06', ['2026-12-06', '2026-12-05'].map(all))).toBeCloseTo(4 / 14);
+    // 30 Nov–6 Dec: 6 mornings (no Sunday), 7 evenings, 2 finishers (Tue, Fri) = 15 due; Sat 2 + Sun 1 done.
+    expect(completion7('2026-12-06', ['2026-12-06', '2026-12-05'].map(all))).toBeCloseTo(3 / 15);
   });
 });
 
@@ -254,7 +263,7 @@ describe('CSV', () => {
     expect(workouts[0].entries[1].sets[0]).toMatchObject({ loadKg: 20, carryM: 30 });
     expect(workouts[1]).toMatchObject({ session: 'morning' });
     expect(workouts[1].entries[0].exerciseId).toBe('custom:Mystery stretch');
-    expect(workouts[2]).toMatchObject({ session: 'evening' });
+    expect(workouts[2]).toMatchObject({ session: 'finisher' });
     expect(workouts[2].entries[0].exerciseId).toBe('side-plank');
   });
 });
@@ -285,7 +294,30 @@ describe('new ladders', () => {
     expect(LADDERS.tibialis.levels.slice(4)).toEqual(['tib-5', 'tib-6', 'tib-7']);
     expect(LADDERS.wallsit.levels.map((id) => EX[id].ladder)).toEqual(['wallsit', 'wallsit', 'wallsit']);
     expect(LADDERS.squat.levels).toEqual(['he-squat', 'he-back-squat']);
-    expect(dayPlan('2026-12-02').evening.map((s) => s.ref)).toContain('wallsit');
-    expect(dayPlan('2026-12-02').morning.map((s) => s.ref)).toEqual(['ktw', 'slant', 'shortfoot', 'toe-yoga', 'tibialis', 'clam', 'clam-side']);
+    expect(dayPlan('2026-12-01').finisher.map((s) => s.ref)).toContain('wallsit');
+    expect(dayPlan('2026-12-02').morning.map((s) => s.ref)).toEqual(['ktw', 'slant', 'shortfoot', 'toe-yoga', 'tib-rot', 'tibialis', 'clam', 'clam-side']);
+  });
+});
+
+describe('return to running', () => {
+  const base = { ...DEFAULT_SETTINGS, runStage: 1, runStageSince: '2026-12-01' };
+  const run = (date: string, painDuring: number, painNextMorning: number) => ({ date, stage: 1, painDuring, painNextMorning });
+  it('needs every gate item', () => {
+    expect(gatePassed(DEFAULT_SETTINGS)).toBe(false);
+    expect(gatePassed({ ...DEFAULT_SETTINGS, runGate: { walk: true, squat: true, heel: true, hops: true, shoes: true } })).toBe(true);
+  });
+  it('moves up after 3 clean runs and a week on the stage', () => {
+    const runs = [run('2026-12-01', 2, 1), run('2026-12-03', 3, 2), run('2026-12-05', 1, 0)];
+    expect(stageStatus(runs, base, '2026-12-06').ready).toBe(false);
+    expect(stageStatus(runs, base, '2026-12-08').ready).toBe(true);
+  });
+  it('repeats the stage after a painful run', () => {
+    const runs = [run('2026-12-01', 2, 1), run('2026-12-03', 4, 2), run('2026-12-05', 1, 0)];
+    expect(cleanRun(runs[1])).toBe(false);
+    expect(stageStatus(runs, base, '2026-12-09')).toMatchObject({ ready: false });
+    expect(stageStatus(runs, base, '2026-12-09').text).toMatch(/Repeat/);
+  });
+  it('caps a single run at 10% over the longest in 30 days', () => {
+    expect(longestRunCap([{ date: '2026-12-01', minutes: 20 }, { date: '2026-10-01', minutes: 60 }], '2026-12-05')).toEqual({ longest: 20, cap: 22 });
   });
 });

@@ -1,4 +1,4 @@
-import { EVENING, EXERCISES, LADDERS, SESSION_NAMES, exerciseName } from '../data/plan';
+import { EVENING, EXERCISES, FINISHER, LADDERS, SESSION_NAMES, exerciseName } from '../data/plan';
 import type { EntryLog, SessionId, SetLog, Workout } from '../types';
 import { toISO } from './dates';
 
@@ -70,16 +70,19 @@ export function parseDate(s: string): string | null {
 }
 
 /** Exercise ids that belong to the evening routine (used to split old "Daily routine" rows). */
-const EVENING_IDS = new Set(EVENING.flatMap((s) => (s.ladder ? LADDERS[s.ref as keyof typeof LADDERS].levels : [s.ref])));
+const idsOf = (slots: typeof EVENING) => new Set(slots.flatMap((s) => (s.ladder ? LADDERS[s.ref as keyof typeof LADDERS].levels : [s.ref])));
+const EVENING_IDS = idsOf(EVENING);
+const FINISHER_IDS = idsOf(FINISHER);
 
-/** Leg day A/B, morning or evening. A plain "Daily routine" row goes to evening if the exercise is an evening one. */
+/** Leg day A/B, morning, evening or finisher. A plain "Daily routine" row goes where the exercise belongs. */
 export function parseSession(s: string, exerciseId = ''): SessionId {
   const v = s.toLowerCase().trim();
   if (/\b(a|leg ?day ?a|lega)\b/.test(v) || v.endsWith(' a')) return 'legA';
   if (/\b(b|leg ?day ?b|legb)\b/.test(v) || v.endsWith(' b')) return 'legB';
   if (/morning|\bam\b/.test(v)) return 'morning';
   if (/evening|night|\bpm\b/.test(v)) return 'evening';
-  return EVENING_IDS.has(exerciseId) ? 'evening' : 'morning';
+  if (/finisher/.test(v)) return 'finisher';
+  return FINISHER_IDS.has(exerciseId) ? 'finisher' : EVENING_IDS.has(exerciseId) ? 'evening' : 'morning';
 }
 
 const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');

@@ -83,6 +83,15 @@ export function PainRuleCard() {
           <tr><td><span className="dot z-backoff" />6+</td><td>Above 5, or worse the next morning or week to week: back off for 2–3 days</td></tr>
         </tbody>
       </table>
+      <p className="small">Also back off for 2–3 days if the ankle swells more than usual or aches over the hardware.</p>
+      <h3>Stop and get checked if</h3>
+      <ul className="small">
+        <li>the knee gives way or locks</li>
+        <li>you get new numbness, or numbness that spreads</li>
+        <li>the toes catch when you walk (foot drop)</li>
+        <li>weakness is clearly getting worse</li>
+        <li>the ankle swelling becomes painful, hot or red, suddenly increases, or affects the calf</li>
+      </ul>
     </details>
   );
 }

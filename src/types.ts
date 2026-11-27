@@ -1,7 +1,8 @@
 export type Metric = 'reps' | 'hold' | 'carry';
 export type Equipment = 'barbell' | 'dumbbell' | 'machine' | 'cable' | 'bodyweight' | 'band';
 export type LadderId = 'tibialis' | 'balance' | 'shortfoot' | 'wallsit' | 'squat';
-export type SessionId = 'legA' | 'legB' | 'morning' | 'evening';
+export type SessionId = 'legA' | 'legB' | 'morning' | 'evening' | 'finisher';
+export type RoutineId = 'morning' | 'evening' | 'finisher';
 export type Phase = '20' | '45';
 
 export interface Dose {
@@ -119,6 +120,8 @@ export interface Run {
   painDuring?: number;
   painNextMorning?: number;
   notes?: string;
+  /** return-to-running stage (1-based) this run was done at */
+  stage?: number;
 }
 
 export interface LadderState {
@@ -133,4 +136,9 @@ export interface Settings {
   ladders: Record<LadderId, LadderState>;
   lastBackup?: string;
   welcomeDone?: boolean;
+  /** running-gate checklist, by RUN_GATE id */
+  runGate?: Record<string, boolean>;
+  /** current return-to-running stage, 1-based */
+  runStage?: number;
+  runStageSince?: string;
 }

@@ -5,9 +5,15 @@ import { Banner, PainPicker, PainRuleCard } from '../components/ui';
 import { EX, LADDERS, SESSION_NAMES } from '../data/plan';
 import { download, exportJSON, patchDaily, saveSettings } from '../db';
 import { addDays, daysBetween, formatDay, fromISO, weekday } from '../logic/dates';
-import { dayPlan, doseText, legDaySlots, phasePrompt, resolveSlot, scaleDose, slotsDone } from '../logic/plan';
+import { dayPlan, doseText, dueRoutines, legDaySlots, phasePrompt, resolveSlot, scaleDose, slotsDone } from '../logic/plan';
 import { isTimed } from '../logic/timer';
-import type { DailyLog, Dose, Exercise, LadderId, Slot, Swelling } from '../types';
+import type { DailyLog, Dose, Exercise, LadderId, RoutineId, Slot, Swelling } from '../types';
+
+const ROUTINE_TITLE: Record<RoutineId, [string, string]> = {
+  morning: ['Morning routine', 'ankle and foot · about 10 min'],
+  evening: ['Evening routine', 'mobility and balance · about 10 min'],
+  finisher: ['Lower-body finisher', 'after your upper-body session · about 6 min'],
+};
 
 const SWELLING: Swelling[] = ['None', 'Mild', 'Moderate', 'Marked'];
 
@@ -72,9 +78,8 @@ export function TodayScreen({ ctx }: { ctx: Ctx }) {
           const p = dayPlan(d);
           const l = data.daily.find((x) => x.date === d);
           const marks = [
-            { k: 'Morning', done: slotsDone(p.morning, l) },
-            { k: 'Evening', done: slotsDone(p.evening, l) },
-            ...(p.legDay ? [{ k: SESSION_NAMES[p.legDay], done: data.workouts.some((w) => w.date === d && w.session === p.legDay) }] : []),
+            ...dueRoutines(p).map((r) => ({ k: SESSION_NAMES[r], done: slotsDone(p[r], l), leg: false })),
+            ...(p.legDay ? [{ k: SESSION_NAMES[p.legDay], done: data.workouts.some((w) => w.date === d && w.session === p.legDay), leg: true }] : []),
           ];
           const future = d > today;
           return (
@@ -88,7 +93,7 @@ export function TodayScreen({ ctx }: { ctx: Ctx }) {
               <span className="wk-day">{fromISO(d).toLocaleDateString(undefined, { weekday: 'narrow' })}</span>
               <span className="wk-num">{fromISO(d).getDate()}</span>
               <span className="wk-dots" aria-hidden="true">
-                {marks.map((m, k) => <i key={k} className={`${m.done ? 'on' : ''} ${k === 2 ? 'leg' : ''}`} />)}
+                {marks.map((m, k) => <i key={k} className={`${m.done ? 'on' : ''} ${m.leg ? 'leg' : ''}`} />)}
               </span>
             </button>
           );
@@ -128,7 +133,7 @@ export function TodayScreen({ ctx }: { ctx: Ctx }) {
             </>
           }
         >
-          The plan moves to the longer sessions from 14 Dec.
+          The plan moves to the longer sessions from week 3. Switch once walking pain has stayed at 2/10 or less for 30 min.
         </Banner>
       )}
 
@@ -153,7 +158,7 @@ export function TodayScreen({ ctx }: { ctx: Ctx }) {
         })}
 
       {plan.isSunday && (
-        <Banner tone="info" title="Sunday: half doses and weekly tests" actions={<button className="btn primary" onClick={() => ctx.goTab('tests')}>Do the tests</button>} />
+        <Banner tone="info" title="Sunday: rest morning, easy evening and weekly tests" actions={<button className="btn primary" onClick={() => ctx.goTab('tests')}>Do the tests</button>} />
       )}
 
       {plan.legDay && (
@@ -182,8 +187,7 @@ export function TodayScreen({ ctx }: { ctx: Ctx }) {
         </section>
       )}
 
-      {routine('Morning routine', 'about 10 min', plan.morning, 'morning')}
-      {routine(plan.legDay ? 'Evening – balance only' : 'Evening routine', plan.legDay ? 'leg day' : 'about 10 min', plan.evening, 'evening')}
+      {dueRoutines(plan).map((r) => routine(ROUTINE_TITLE[r][0], ROUTINE_TITLE[r][1], plan[r], r))}
 
       <section className="card">
         <h2>Check-in</h2>
@@ -212,7 +216,7 @@ export function TodayScreen({ ctx }: { ctx: Ctx }) {
     </>
   );
 
-  function routine(title: string, note: string, slots: Slot[], session: 'morning' | 'evening') {
+  function routine(title: string, note: string, slots: Slot[], session: RoutineId) {
     const done = slots.filter((s) => log.items[s.ref]?.done).length;
     const all = done === slots.length;
     const key = `${date}-${session}`;
@@ -220,7 +224,7 @@ export function TodayScreen({ ctx }: { ctx: Ctx }) {
     const answered = slots.every((s) => !s.ladder || log.items[s.ref]?.clean !== undefined);
     if (all && answered && !open[key]) {
       return (
-        <section className="card done-card">
+        <section className="card done-card" key={session}>
           <button className="done-summary" onClick={() => setOpen({ ...open, [key]: true })} aria-expanded="false">
             <span className="done-tick" aria-hidden="true">✓</span>
             <span className="row-name"><strong>{title}</strong> done</span>
@@ -230,7 +234,7 @@ export function TodayScreen({ ctx }: { ctx: Ctx }) {
       );
     }
     return (
-      <section className="card">
+      <section className="card" key={session}>
         <div className="section-head">
           <h2>{title}</h2>
           <span className={`count ${all ? 'complete' : ''}`}>{done}/{slots.length}</span>

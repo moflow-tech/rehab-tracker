@@ -1,7 +1,7 @@
 import { TESTS, exerciseName, type TestDef } from '../data/plan';
 import type { DailyLog, WeeklyTest, Workout } from '../types';
 import { addDays, daysBetween } from './dates';
-import { dayPlan, slotsDone } from './plan';
+import { dayPlan, dueRoutines, slotsDone } from './plan';
 
 const better = (def: TestDef, a: number, b: number) =>
   def.better === 'lower' ? a < b : def.better === 'higher' ? a > b : false;
@@ -100,25 +100,28 @@ export function weeklySummary(testsIn: WeeklyTest[], workouts: Workout[]): Weekl
 
 // ---------- Headline numbers ----------
 
-/** Share of due routines (morning + evening) done in the 7 days ending `today`. */
+/** Share of due routines (morning, evening, finisher) done in the 7 days ending `today`. */
 export function completion7(today: string, daily: DailyLog[]): number {
   let done = 0;
+  let due = 0;
   for (let i = 0; i < 7; i++) {
     const date = addDays(today, -i);
     const plan = dayPlan(date);
     const log = daily.find((d) => d.date === date);
-    if (slotsDone(plan.morning, log)) done++;
-    if (slotsDone(plan.evening, log)) done++;
+    for (const r of dueRoutines(plan)) {
+      due++;
+      if (slotsDone(plan[r], log)) done++;
+    }
   }
-  return done / 14;
+  return due ? done / due : 0;
 }
 
-/** Consecutive days with both routines done, ending today (or yesterday if today isn't finished yet). */
+/** Consecutive days with every due routine done, ending today (or yesterday if today isn't finished yet). */
 export function streak(today: string, daily: DailyLog[]): number {
   const full = (date: string) => {
     const plan = dayPlan(date);
     const log = daily.find((d) => d.date === date);
-    return slotsDone(plan.morning, log) && slotsDone(plan.evening, log);
+    return dueRoutines(plan).every((r) => slotsDone(plan[r], log));
   };
   let date = full(today) ? today : addDays(today, -1);
   let n = 0;

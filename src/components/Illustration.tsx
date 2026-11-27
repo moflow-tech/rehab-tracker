@@ -608,7 +608,194 @@ export const ILLUSTRATIONS: Record<string, Frames> = {
       ),
     },
   },
+
+  tibrot: {
+    alt: 'Front view next to a counter: standing on one leg with the arch lifted. The knee and thigh turn slowly inward, then outward, while the foot stays still.',
+    start: {
+      label: 'Knee turned in',
+      svg: (<><Floor /><Counter /><OneLeg knee={[108, 146]} /><Label x={36} y={204}>weight on 3 points of foot</Label></>),
+    },
+    end: {
+      label: 'Knee turned out',
+      svg: (
+        <>
+          <Floor /><Counter /><OneLeg knee={[126, 146]} />
+          <Arrow p={[[96, 160], [112, 170], [132, 160]]} curve />
+          <Label x={36} y={204}>foot and arch stay still</Label>
+        </>
+      ),
+    },
+  },
+
+  hipflexor: {
+    alt: 'Side view: half-kneeling with the back knee on a cushion. Tuck the tailbone under, squeeze the glute of the back leg, then shift the hips forward a little.',
+    start: {
+      label: 'Half-kneel, tall',
+      svg: (
+        <>
+          <Floor /><rect x={42} y={178} width={36} height={10} rx={4} className="prop-fill" />
+          <Person head={[92, 46]} neck={[90, 62]} hip={[90, 122]}
+            armN={[[90, 70], [102, 96], [94, 118]]}
+            legN={[[60, 176], [22, 182]]}
+            legF={[[134, 128], [132, 180], [128, 187], [156, 187]]} />
+        </>
+      ),
+    },
+    end: {
+      label: 'Tuck, squeeze, shift',
+      svg: (
+        <>
+          <Floor /><rect x={42} y={178} width={36} height={10} rx={4} className="prop-fill" />
+          <Person head={[102, 48]} neck={[100, 64]} hip={[104, 124]}
+            armN={[[100, 72], [114, 98], [106, 120]]}
+            legN={[[60, 176], [22, 182]]}
+            legF={[[142, 132], [132, 180], [128, 187], [156, 187]]} />
+          <Arrow p={[[74, 104], [96, 104]]} />
+          <Label x={10} y={204}>stretch at front of hip, not back</Label>
+        </>
+      ),
+    },
+  },
+
+  hamstring: {
+    alt: 'Side view: lying on your back in a doorway with one leg resting up the door frame and the other leg flat on the floor. Edge the hips closer to the frame to deepen the stretch, keeping the knee straight.',
+    start: {
+      label: 'Leg up the frame',
+      svg: (
+        <>
+          <Floor /><Wall x={124} />
+          <Limb p={[[92, 180], [190, 182]]} ghost />
+          <Limb p={[[44, 176], [92, 180]]} />
+          <Limb p={[[92, 180], [108, 138], [122, 96]]} />
+          <Limb p={[[52, 178], [72, 186], [92, 186]]} ghost />
+          <circle cx={30} cy={172} r={13} className="fig-fill" />
+        </>
+      ),
+    },
+    end: {
+      label: 'Hips closer, 45 s',
+      svg: (
+        <>
+          <Floor /><Wall x={124} />
+          <Limb p={[[106, 180], [190, 182]]} ghost />
+          <Limb p={[[58, 176], [106, 180]]} />
+          <Limb p={[[106, 180], [114, 136], [122, 92]]} />
+          <Limb p={[[66, 178], [86, 186], [106, 186]]} ghost />
+          <circle cx={44} cy={172} r={13} className="fig-fill" />
+          <Arrow p={[[60, 150], [84, 150]]} />
+          <Label x={10} y={204}>knee straight, other leg flat</Label>
+        </>
+      ),
+    },
+  },
+
+  ninety: {
+    alt: 'View from above: sitting tall with both knees bent at 90 degrees, one leg in front and one to the side. Rotate both knees over to the other side, then back.',
+    start: {
+      label: 'Knees to one side',
+      svg: (
+        <>
+          <NinetyNinety flip={false} />
+          <Label x={10} y={204}>view from above · sit tall</Label>
+        </>
+      ),
+    },
+    end: {
+      label: 'Switch, slowly',
+      svg: (
+        <>
+          <NinetyNinety flip />
+          <Arrow p={[[150, 176], [100, 196], [50, 176]]} curve />
+        </>
+      ),
+    },
+  },
+
+  deepsquat: {
+    alt: 'Side view: holding a door frame or post, sink into a deep squat with heels down (on a wedge if needed), knees over the second and third toes, and hold.',
+    start: {
+      label: 'Hold the frame',
+      svg: (<><Wall x={172} /><Floor /><Person {...stand({ armN: [[100, 58], [134, 78], [170, 82]] })} /></>),
+    },
+    end: {
+      label: 'Sink down, hold 30 s',
+      svg: (
+        <>
+          <Wall x={172} /><Floor />
+          <Person head={[114, 90]} neck={[106, 104]} hip={[78, 160]}
+            armN={[[106, 112], [138, 110], [170, 108]]}
+            legN={[[124, 136], [110, 182], [104, 187], [132, 187]]}
+            legF={[[120, 140], [106, 182], [100, 187], [128, 187]]} />
+          <Arrow p={[[52, 110], [52, 146]]} />
+          <Label x={10} y={204}>heels down, arches lifted</Label>
+        </>
+      ),
+    },
+  },
+
+  deadbug: {
+    alt: 'Side view: lying on your back with arms pointing up and knees bent at 90 degrees over the hips. Lower one arm overhead and the opposite leg toward the floor while the lower back stays pressed down.',
+    start: {
+      label: 'Arms up, knees up',
+      svg: (
+        <>
+          <Floor />
+          <Limb p={[[118, 178], [118, 134], [160, 134]]} ghost />
+          <Limb p={[[56, 176], [60, 136], [64, 106]]} ghost />
+          <Limb p={[[50, 176], [118, 178]]} />
+          <Limb p={[[118, 178], [122, 132], [164, 132]]} />
+          <Limb p={[[56, 174], [58, 134], [62, 104]]} />
+          <circle cx={36} cy={170} r={13} className="fig-fill" />
+        </>
+      ),
+    },
+    end: {
+      label: 'Opposite arm and leg out',
+      svg: (
+        <>
+          <Floor />
+          <Limb p={[[118, 178], [150, 162], [190, 172]]} />
+          <Limb p={[[56, 174], [34, 152], [10, 160]]} />
+          <Limb p={[[50, 176], [118, 178]]} />
+          <Limb p={[[118, 178], [122, 132], [164, 132]]} ghost />
+          <Limb p={[[60, 176], [62, 136], [66, 106]]} ghost />
+          <circle cx={36} cy={170} r={13} className="fig-fill" />
+          <Label x={40} y={204}>lower back stays down</Label>
+        </>
+      ),
+    },
+  },
 };
+
+/** Front view, standing on the right leg beside a counter, the other foot lifted. */
+function OneLeg({ knee }: { knee: P }) {
+  return (
+    <g>
+      <Limb p={[[94, 108], [90, 140], [96, 160], [88, 163]]} ghost />
+      <Limb p={[[116, 108], knee, [112, 182], [122, 186]]} />
+      <Limb p={[[106, 50], [106, 108]]} />
+      <Limb p={[[94, 108], [116, 108]]} />
+      <Limb p={[[96, 58], [86, 84], [82, 106]]} />
+      <Limb p={[[116, 58], [130, 80], [148, 96]]} />
+      <circle cx={106} cy={34} r={13} className="fig-fill" />
+    </g>
+  );
+}
+
+/** 90/90 sitting seen from above: one thigh forward with the shin across, the other thigh out to the side with the shin back. */
+function NinetyNinety({ flip }: { flip: boolean }) {
+  const m = (p: P): P => (flip ? [200 - p[0], p[1]] : p);
+  return (
+    <g>
+      <Limb p={[m([114, 92]), m([164, 92]), m([164, 40])]} ghost />
+      <Limb p={[m([86, 92]), m([86, 150]), m([150, 150])]} />
+      <Limb p={[[84, 92], [116, 92]]} />
+      <Limb p={[[80, 72], [120, 72]]} />
+      <Limb p={[[100, 72], [100, 92]]} />
+      <circle cx={100} cy={58} r={13} className="fig-fill" />
+    </g>
+  );
+}
 
 /** Side-lying, viewed from the front: head on the left, hips and knees bent toward the viewer. */
 function SideLying({ topKnee }: { topKnee: P }) {

@@ -5,9 +5,9 @@ import { Num, PainPicker, Toast, useToast } from '../components/ui';
 import { EX, EXERCISES, LADDERS, SESSION_NAMES, exerciseName } from '../data/plan';
 import { db, getDaily, saveDaily } from '../db';
 import { formatDay } from '../logic/dates';
-import { dayPlan, doseText, legDaySlots, resolveSlot, scaleDose } from '../logic/plan';
+import { ROUTINE_SLOTS, dayPlan, doseText, legDaySlots, resolveSlot, scaleDose } from '../logic/plan';
 import { effortRPE, history, suggestLoad, topLoad, type Suggestion } from '../logic/progression';
-import type { Dose, EntryLog, Exercise, SessionId, SetLog, Slot, Workout } from '../types';
+import type { Dose, EntryLog, Exercise, RoutineId, SessionId, SetLog, Slot, Workout } from '../types';
 
 const LOADED = new Set(['barbell', 'dumbbell', 'machine', 'cable']);
 
@@ -28,7 +28,7 @@ function rpeText(e: EntryLog, target?: Dose): string {
   return r <= 8 ? ', est. RPE ≤8' : `, est. RPE ~${r}`;
 }
 
-const ROUTINE = (s: SessionId): s is 'morning' | 'evening' => s === 'morning' || s === 'evening';
+const ROUTINE = (s: SessionId): s is RoutineId => s === 'morning' || s === 'evening' || s === 'finisher';
 
 function lastText(e: EntryLog, target?: Dose): string {
   const reps = e.sets.map((s) => s.reps ?? s.holdS ?? s.carryM ?? '–');
@@ -61,7 +61,8 @@ export function LogScreen({ ctx, preset }: { ctx: Ctx; preset: { date: string; s
   }, [preset]);
 
   const slots: Slot[] = useMemo(() => {
-    if (ROUTINE(session)) return dayPlan(date)[session];
+    // The full routine even on a day it isn't due (e.g. a Sunday morning), so anything can be logged.
+    if (ROUTINE(session)) return ROUTINE_SLOTS[session];
     return legDaySlots(session, settings.phase);
   }, [session, date, settings.phase]);
 

@@ -51,12 +51,21 @@ export const EXERCISES: Exercise[] = [
   },
   {
     id: 'toe-yoga', name: 'Toe yoga', metric: 'reps', equipment: 'bodyweight',
-    dose: { sets: 2, reps: 10 },
-    howTo: 'Sit or stand with the foot flat. Lift only the big toe while pressing the other four down, then switch: press the big toe down and lift the other four. One switch each way is one rep.',
+    dose: { sets: 1, reps: 10, perSide: true },
+    howTo: 'Straight after the short foot. Sit or stand with the foot flat. Lift only the big toe while pressing the other four down, then switch: press the big toe down and lift the other four. One switch each way is one rep.',
     cues: ['Move slowly – control beats height', 'Keep the ankle still', 'Use a finger to help at first if needed'],
     mistake: 'Rolling the whole foot in or out to cheat the toes up.',
     why: 'Trains independent toe control for balance and push-off.',
     illustration: 'toeyoga',
+  },
+  {
+    id: 'tib-rot', aliases: ['Tibial rotation'], name: 'Tibial rotation with arch control', metric: 'reps', equipment: 'bodyweight',
+    dose: { sets: 2, reps: 10, perSide: true, note: 'right first' },
+    howTo: 'Stand on one foot with weight spread over the big toe, little toe and heel. Keep the foot completely still and slowly turn the knee and thigh inward, then outward, without the arch collapsing or the big toe lifting.',
+    cues: ['Foot stays planted on three points', 'Slow – about 2 s each way', 'Arch stays lifted the whole time'],
+    mistake: 'Letting the arch roll flat or the big toe lift as the knee turns in.',
+    why: 'Trains control of how the shin turns over the foot, which your history points to. Based on expert practice rather than trials.',
+    illustration: 'tibrot',
   },
   {
     id: 'tib-1', name: 'Seated toe lifts', metric: 'reps', equipment: 'bodyweight', ladder: 'tibialis', level: 1,
@@ -127,7 +136,7 @@ export const EXERCISES: Exercise[] = [
     howTo: 'Loop a mini-band just above the knees and stand in a quarter squat. Keeping the feet planted, rotate one knee outward against the band, then return slowly. Do all reps on one side, then switch.',
     cues: ['Feet stay planted', 'Pelvis stays square', 'Move from the hip, not the foot'],
     mistake: 'Rolling onto the outside of the foot instead of turning from the hip.',
-    why: 'Wakes up the hip muscles that keep the knee from caving in.',
+    why: 'Wakes up the hip muscles that keep the knee from caving in. Do it right before you walk to work.',
     illustration: 'clam',
   },
 
@@ -179,9 +188,56 @@ export const EXERCISES: Exercise[] = [
     illustration: 'balance',
   },
   {
+    id: 'hip-flexor', aliases: ['Hip flexor stretch', 'Half-kneeling hip flexor stretch'], name: 'Half-kneeling hip flexor stretch', metric: 'hold', equipment: 'bodyweight',
+    dose: { sets: 2, holdS: 45, perSide: true, note: 'left gets a 3rd set' },
+    howTo: 'Kneel on one knee on a cushion with the other foot forward. Tuck your tailbone under and squeeze the glute of the kneeling leg, then shift forward a little until you feel a stretch at the front of the hip. Right 2 × 45 s, left 3 × 45 s. On desk days, add one 45 s hold on the left once or twice a day.',
+    cues: ['Tailbone tucked under first', 'Squeeze the back-leg glute', 'Small shift forward – the stretch is at the front of the hip'],
+    mistake: 'Arching the lower back and lunging far forward, so you feel it in the back instead of the hip.',
+    why: 'Your left hip flexor is tighter. Adding the pelvic tuck eased hip-flexor tightness more than the usual stretch in a 2024 trial. Move on to the couch stretch once kneeling and a deep left-knee bend stay at 2/10 or less.',
+    illustration: 'hipflexor',
+  },
+  {
+    id: 'hamstring', aliases: ['Hamstring stretch'], name: 'Hamstring stretch – leg up a door frame', metric: 'hold', equipment: 'bodyweight',
+    dose: { sets: 2, holdS: 45, perSide: true },
+    howTo: 'Lie on your back in a doorway. Rest one leg up the door frame with the knee straight and the other leg flat on the floor through the doorway. Edge your hips closer to the frame to deepen the stretch, then hold.',
+    cues: ['Knee straight', 'Other leg stays flat', 'Gentle stretch, slow breathing'],
+    mistake: 'Bending the knee or letting the other leg lift off the floor.',
+    why: 'Tight hamstrings are one of the flexibility gaps linked with kneecap pain.',
+    illustration: 'hamstring',
+  },
+  {
+    id: 'ninety', aliases: ['90/90', '90/90 hip switches'], name: '90/90 hip switches', metric: 'reps', equipment: 'bodyweight',
+    dose: { sets: 2, reps: 8, perSide: true, note: 'each way, slow' },
+    howTo: 'Sit with both knees bent at 90°, one leg in front of you and one out to the side. Staying tall, rotate both knees over to the other side, then back. Use your hands behind you at first if you need to.',
+    cues: ['Sit tall', 'Slow and controlled', 'Both knees move together'],
+    mistake: 'Slumping and rocking the whole body instead of turning from the hips.',
+    why: 'Works hip rotation, which a deep squat needs along with ankle range. Based on expert practice.',
+    illustration: 'ninety',
+  },
+  {
+    id: 'deep-squat', aliases: ['Deep squat hold', 'Supported deep squat'], name: 'Supported deep squat hold', metric: 'hold', equipment: 'bodyweight',
+    dose: { sets: 3, holdS: 30 },
+    howTo: 'Hold a door frame or post and sink into your deepest comfortable squat. Put your heels on the slant board or plates if they lift. Keep the knees over the 2nd–3rd toe and the arches lifted, and hold.',
+    cues: ['Knees over the 2nd–3rd toe', 'Arches lifted', 'Use the frame as much as you need'],
+    mistake: 'Letting the knees cave in or the arches collapse to get deeper.',
+    why: 'Practises the deep squat you want. The pain rule applies.',
+    illustration: 'deepsquat',
+  },
+  {
+    id: 'dead-bug', aliases: ['Dead bug'], name: 'Dead bug', metric: 'reps', equipment: 'bodyweight',
+    dose: { sets: 2, reps: 8, perSide: true, note: 'slow' },
+    howTo: 'Lie on your back with your arms pointing up and knees bent at 90° over your hips. Press your lower back into the floor, then slowly lower one arm overhead and the opposite leg toward the floor. Return and swap sides.',
+    cues: ['Lower back stays pressed down', 'Breathe out as you lower', 'Only go as low as you can keep the back down'],
+    mistake: 'Letting the lower back arch off the floor as the leg goes down.',
+    why: 'Trains pelvic control against a forward tilt. Core work is part of exercise therapy for kneecap pain.',
+    illustration: 'deadbug',
+  },
+
+  // ---------- Lower-body finisher (Tue and Fri, after the upper-body session) ----------
+  {
     id: 'heel-straight', name: 'Heel raises – straight knee', metric: 'reps', equipment: 'bodyweight',
     dose: { sets: 2, reps: 15, note: '3 s down' },
-    howTo: 'Stand with the knees straight, fingertips on a wall for balance. Rise onto the balls of your feet with pressure over the big toe, then lower over 3 s.',
+    howTo: 'Stand with the knees straight, fingertips on a wall for balance. Start on two legs, then progress to single-leg on the right. Rise onto the balls of your feet with pressure over the big toe, then lower over 3 s.',
     cues: ['Pressure over the big toe', 'Straight up, not rolling out', '3 s on the way down'],
     mistake: 'Ankles rolling outward so weight shifts to the little toes.',
     why: 'Builds calf strength (gastrocnemius) for walking and running.',
@@ -253,7 +309,7 @@ export const EXERCISES: Exercise[] = [
   {
     id: 'leg-ext', name: 'Leg extension', metric: 'reps', equipment: 'machine', dose: { sets: 3, reps: 15 },
     howTo: 'Pad on the lower shin, knee lined up with the machine pivot. Straighten the knees, pause, and lower slowly.',
-    cues: ['Squeeze at the top', '2–3 s on the way down', 'Stay in a pain-free range'],
+    cues: ['Squeeze at the top', '2–3 s on the way down', 'If the kneecap hurts, work only between 90° and 45° of knee bend'],
     mistake: 'Swinging the weight up with momentum.',
     why: 'Isolates the quads, which protect the front of the knee.',
     photos: ph('Leg_Extensions'),
@@ -319,13 +375,13 @@ export const EXERCISES: Exercise[] = [
   {
     id: 'bss', aliases: ['BSS', 'Split squat'], name: 'Bulgarian split squat', metric: 'reps', equipment: 'dumbbell', dose: { sets: 3, reps: 8, perSide: true },
     howTo: 'Rear foot on a bench behind you, front foot far enough forward to drop straight down. Lower until the back knee nearly touches the floor, then drive up through the front foot.',
-    cues: ['Front knee over the toes', 'Torso slightly forward', 'Control the bottom'],
+    cues: ['Weaker side first', 'Front knee over the toes, arch active', 'Control the bottom'],
     mistake: 'Front foot too close so the heel lifts.',
     why: 'Single-leg strength and balance under load.',
     photos: ph('One_Leg_Barbell_Squat'), photoNote: 'Photo shows the barbell version.',
   },
   {
-    id: 'sl-calf', aliases: ['Single-leg calf raise'], name: 'Single-leg calf raise on a step', metric: 'reps', equipment: 'bodyweight', dose: { sets: 3, reps: 10, repsMax: 12 },
+    id: 'sl-calf', aliases: ['Single-leg calf raise'], name: 'Single-leg calf raise on a step', metric: 'reps', equipment: 'bodyweight', dose: { sets: 3, reps: 10, repsMax: 12, note: 'right gets an extra set' },
     howTo: 'Stand on one foot on the edge of a step. Lower the heel below the step, then rise as high as you can.',
     cues: ['Full range', 'Pressure over the big toe', 'Slow lowering'],
     mistake: 'Bouncing at the bottom.',
@@ -423,6 +479,7 @@ export const MORNING: Slot[] = [
   { ref: 'slant' },
   { ref: 'shortfoot', ladder: true },
   { ref: 'toe-yoga' },
+  { ref: 'tib-rot' },
   { ref: 'tibialis', ladder: true },
   { ref: 'clam' },
   { ref: 'clam-side' },
@@ -430,6 +487,15 @@ export const MORNING: Slot[] = [
 
 export const EVENING: Slot[] = [
   { ref: 'balance', ladder: true },
+  { ref: 'hip-flexor' },
+  { ref: 'hamstring' },
+  { ref: 'ninety' },
+  { ref: 'deep-squat' },
+  { ref: 'dead-bug' },
+];
+
+/** About 6 minutes on Tuesdays and Fridays, after the upper-body session. */
+export const FINISHER: Slot[] = [
   { ref: 'heel-straight' },
   { ref: 'heel-bent' },
   { ref: 'wallsit', ladder: true },
@@ -479,9 +545,10 @@ export const SESSION_NAMES: Record<SessionId, string> = {
   legB: 'Leg day B',
   morning: 'Morning routine',
   evening: 'Evening routine',
+  finisher: 'Lower-body finisher',
 };
 
-export const PHASE_SWITCH_DATE = '2026-12-14';
+export const PHASE_SWITCH_DATE = '2026-12-09';
 export const BASELINE_DATE = '2026-11-25';
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -523,3 +590,25 @@ export const TESTS: TestDef[] = [
 export function exerciseName(id: string, fallback?: string) {
   return EX[id]?.name ?? fallback ?? id.replace(/^custom:/, '');
 }
+
+// ---------- Return to running ----------
+
+export const RUN_GATE: { id: string; text: string }[] = [
+  { id: 'walk', text: 'Walk 30 min with knee pain 2/10 or less, no worse the next morning' },
+  { id: 'squat', text: '10 slow single-leg squats each side, pain 2/10 or less' },
+  { id: 'heel', text: '20 single-leg heel raises on the right and on the left' },
+  { id: 'hops', text: '10 small hops on the spot on each leg, pain 2/10 or less' },
+  { id: 'shoes', text: 'New running shoes' },
+];
+
+/** Three sessions a week, never on back-to-back days. At least a week on each stage. */
+export const RUN_STAGES: string[] = [
+  '6 × (1 min easy run / 2 min walk)',
+  '6 × (2 min run / 1 min walk)',
+  '4 × (5 min run / 1 min walk)',
+  '20 min continuous, easy (you can talk)',
+  'Run the 3.2 km commute one way, twice a week',
+  'Run the commute one way, 3–4× a week',
+  'Run both ways on 2 days, one way on 2 days',
+  'Run both ways 3–4× a week',
+];

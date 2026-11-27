@@ -1,6 +1,6 @@
 # Rehab Tracker
 
-A personal, offline-first web app for your lower-limb rehab plan: morning and evening routines (ticked and logged separately), Leg day A/B logging, Sunday tests, walk–run logs, and progress charts. All data stays in your browser. There is no account and no server.
+A personal, offline-first web app for your lower-limb rehab plan: morning and evening routines plus a Tue/Fri lower-body finisher (ticked and logged separately), Leg day A/B logging, Sunday tests, a running gate and walk–run stages, and progress charts. All data stays in your browser. There is no account and no server.
 
 This is a personal tracker, not medical software.
 
@@ -68,7 +68,7 @@ How each column is read:
 | Column | Accepted values |
 | --- | --- |
 | Date | `2026-11-25`, `25/11/2026` or `25.11.2026` (day first) |
-| Session | `Leg day A` / `Leg day B` (anything with A or B as a word), `Morning`, `Evening`. Older `Daily routine` rows are split automatically: evening exercises (balance, heel raises, wall sit, side plank) go to Evening, the rest to Morning |
+| Session | `Leg day A` / `Leg day B` (anything with A or B as a word), `Morning`, `Evening`, `Finisher`. Older `Daily routine` rows are split automatically: finisher exercises (heel raises, wall sit, side plank) go to Finisher, evening ones (balance, stretches, 90/90, deep squat, dead bug) to Evening, the rest to Morning |
 | Exercise | Matched to the plan by name, ignoring case and punctuation. Common short names work (e.g. `RDL`, `Leg curl`, `Hip abduction`). Unknown names are still imported under their own name |
 | Sets | Number of sets |
 | Reps | One number for every set (`12`) or one per set (`12/12/10`) |
@@ -87,14 +87,15 @@ Rows are grouped into one workout per date and session. Importing the same file 
 - **No RPE typing:** the app estimates effort from how your reps hold up across sets. Reps level at the top of the range = RPE ≤ 8; dropping 1 rep = ~9; dropping 2+ or missing the bottom of the range = ~10. It needs at least 2 sets to estimate.
 - **Load suggestions:** when you hit the top of the rep range on every set, with knee pain ≤ 3/10, in **two sessions in a row at the same weight**, the next session suggests about 2.5–5% more load, rounded to your weight steps (Settings). After the first such session it says "do it once more to go up". Missing the bottom of the range two sessions in a row suggests holding the weight or dropping about 5%.
 - **Ladders:** tibialis (7 levels – the last three are the wall raises with heels 10–15, 15–20 and 20–25 cm out), single-leg balance, short foot, wall-sit depth (about 45° → 60° → thighs near level) and squat (heels-elevated goblet → heels-elevated back squat, on the 45-min Leg day A). For each: tick an item on Today and answer the quality question (for example "relaxed toes, no cramping"). The tag next to the exercise shows your count, e.g. `L1 · 2/3`. After 3 clean sessions in a row at a level, a **Move up** card appears ("Not yet" restarts the count). You can also tap the exercise and choose **Move up now** or **Step back** at any time.
-- **Logging routines:** Morning and Evening routine are separate sessions in the Log tab. Each routine card on Today has a **Log reps & holds** button for that routine. Saving a routine log also ticks its items on Today.
+- **Logging routines:** Morning, Evening and the finisher are separate sessions in the Log tab. Each routine card on Today has a **Log reps & holds** button for that routine. Saving a routine log also ticks its items on Today.
 - **Pain rule:** pain above 5/10, pain of 3–5 that hasn't settled to 2 or less by the next morning, morning pain going up, or weekly walking pain going up all trigger a 3-day back-off. During back-off, routine doses are halved and suggested leg-day loads are halved.
-- **Sundays:** routine doses are halved and the Tests tab is suggested.
+- **Schedule:** morning routine Mon–Sat, evening routine every day (leg days too), the 6-minute finisher on Tuesdays and Fridays. On Sundays the morning is a rest and the evening is at half dose, and the Tests tab is suggested.
+- **Running:** the Runs tab shows the 5-item running gate until it's all ticked, then the walk–run stage. It suggests moving up after 3 clean runs (pain 3/10 or less during, 2/10 or less the next morning) and at least a week on the stage, and shows the 10% longest-run cap.
 - **45-min leg days:** from 14 Dec 2026 the app offers to switch. You can delay it a week at a time or switch by hand in Settings.
 
 ## Everyday use
 
-- **Today:** the week strip at the top shows each day's morning, evening and leg-day status (filled dot = done); tap a day to see or fix it. Finished routines fold away once their ladder questions are answered.
+- **Today:** the week strip at the top shows each day's routine and leg-day status (filled dot = done); tap a day to see or fix it. Finished routines fold away once their ladder questions are answered.
 - **Guided timer:** ▶ next to any hold exercise runs it for you – sets, sides, reps with short holds, relax and rest gaps – with beeps and vibration, and keeps the screen on. At the end, **Mark as done** ticks it.
 - **Gym logging:** set **Knee pain this session** once instead of per exercise (use "Different knee pain?" only when one exercise was different). Type the weight on set 1 and the other sets follow. Tap **Done ✓** to fold an exercise away. **Rest 90s** starts a rest timer (⟳ cycles 60/90/120 s). **Recent sessions** at the bottom reopens past logs.
 - **Backup reminder:** once you've used the app for a week, Today reminds you to export a backup every 14 days.

@@ -1,9 +1,10 @@
 // Dev-only: open the app with ?demo to replace all data with 4 weeks of fake logs,
 // built so the go-up hint, a ladder level-up and the back-off banner all appear.
 // Open with ?demo=clear to erase everything again.
-import { DEFAULT_SETTINGS, EVENING, MORNING } from './data/plan';
+import { DEFAULT_SETTINGS } from './data/plan';
 import { db, eraseAll } from './db';
 import { addDays, todayISO, weekday } from './logic/dates';
+import { dayPlan } from './logic/plan';
 import type { DailyLog, Workout } from './types';
 
 export async function seedDemo() {
@@ -20,8 +21,9 @@ export async function seedDemo() {
     const wd = weekday(date);
     const items: DailyLog['items'] = {};
     const skip = i % 6 === 5; // miss the odd day
-    for (const s of [...MORNING, ...(wd === 1 || wd === 4 ? EVENING.slice(0, 1) : EVENING)]) {
-      if (skip && s.ref !== 'ktw') continue;
+    const p = dayPlan(date);
+    for (const s of [...p.morning, ...p.evening, ...p.finisher]) {
+      if (skip && s.ref !== 'balance') continue;
       const exerciseId = s.ladder ? ({ tibialis: 'tib-1', balance: 'bal-1', shortfoot: 'sf-1', wallsit: 'wall-sit-1' } as Record<string, string>)[s.ref] : undefined;
       items[s.ref] = { done: true, exerciseId, clean: s.ref === 'tibialis' ? i <= 3 : s.ladder ? i % 2 === 0 : undefined };
     }

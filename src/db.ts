@@ -64,6 +64,14 @@ export async function saveSettings(s: Settings) {
   await db.kv.put({ key: 'settings', value: s });
 }
 
+/** Read-modify-write settings in one transaction, so quick taps never overwrite each other. */
+export async function patchSettings(fn: (s: Settings) => Settings) {
+  await db.transaction('rw', db.kv, async () => {
+    const cur = mergeSettings((await db.kv.get('settings'))?.value as Partial<Settings>);
+    await db.kv.put({ key: 'settings', value: fn(cur) });
+  });
+}
+
 export async function saveDaily(log: DailyLog) {
   await db.daily.put(log);
 }
